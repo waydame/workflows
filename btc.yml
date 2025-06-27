@@ -1,0 +1,27 @@
+name: BTC Bot Daily Run
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # 每天 UTC 0 点运行（北京时间 +8 需写 16）
+  workflow_dispatch:     # 支持手动运行
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.11
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run BTC script
+        env:
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          CHAT_ID: ${{ secrets.CHAT_ID }}
+        run: python main.py
